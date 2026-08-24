@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Firaol Dereje Tsegaye — Digital Architect</title>
+    <meta
+      name="description"
+      content="Portfolio of Firaol Dereje Tsegaye. Move across the water, then click to enter a neon home built for front-end architecture and responsive design."
+    />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Orbitron:wght@500;700;800&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="is-splash">
+    <a class="skip" href="#home">Skip to home</a>
+
+    <section class="splash" id="splash" aria-label="Water surface intro" tabindex="0">
+      <canvas id="water" class="water" aria-hidden="true"></canvas>
+      <div class="hero-shade"></div>
+      <div class="hero-copy">
+        <p class="greeting">Greetings. Welcome to my portfolio. My name is</p>
+        <h1>
+          <span class="given">Firaol</span>
+          <span class="family">Dereje Tsegaye</span>
+        </h1>
+      </div>
+      <p class="hint">
+        <span class="hint-dot"></span>
+        Hover to ripple · Click to go home
+      </p>
+      <p class="dive">Enter <span aria-hidden="true">↑</span></p>
+    </section>
+
+    <header class="site-header">
+      <a class="mark" href="#splash" id="back-to-surface" aria-label="Return to water surface">
+        <span class="mark-rings" aria-hidden="true"></span>
+        <span class="mark-name">FDT</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span class="sr-only">Menu</span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav id="site-nav" class="nav" aria-label="Primary">
+        <a href="#home">Home</a>
+        <a href="#work">Projects</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main aria-hidden="true">
+      <section class="home" id="home">
+        <canvas id="water-home" class="water water-home" aria-hidden="true"></canvas>
+        <div class="home-shade"></div>
+        <div class="home-grid" aria-hidden="true"></div>
+        <div class="home-floor" aria-hidden="true"></div>
+        <pre class="home-code home-code-a" aria-hidden="true">const surface = {
+  ripple(x, y) {
+    energy.write(x, y);
+    return render();
+  }
+};</pre>
+        <pre class="home-code home-code-b" aria-hidden="true">&lt;Architect
+  stack="front-end"
+  mode="responsive"
+/&gt;</pre>
+
+        <div class="home-layout">
+          <div class="home-copy">
+            <p class="home-badge">DIGITAL ARCHITECT_</p>
+            <h2 class="home-title">
+              BUILDING THE <span class="accent">WEB_</span>
+              ONE LINE OF CODE AT A TIME.
+            </h2>
+            <p class="home-bio">
+              I am Firaol Dereje Tsegaye, a passionate web developer dedicated to
+              turning complex concepts into clean, intuitive, and high-performing
+              digital experiences. I specialize in front-end architecture and
+              responsive design.
+            </p>
+            <div class="home-cta">
+              <a class="btn btn-solid" href="#work">&gt; EXPLORE PROJECTS</a>
+              <a class="btn btn-ghost" href="resume.html">&gt; VIEW RESUME</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel about" id="about">
+        <div class="panel-rule" aria-hidden="true">below the surface</div>
+        <div class="about-grid reveal">
+          <div class="about-copy">
+            <p class="kicker">About</p>
+            <h2>I want to know how the work is made, then put it into ordinary life.</h2>
+            <p>
+              I’m Firaol Dereje Tsegaye, currently learning full-stack web development.
+              The interesting part, for me, is not a stack for its own sake — it is
+              the framework of how code is built, and how that same thinking can
+              move through the rest of a day: tools, collaboration, small useful things.
+            </p>
+            <p>
+              This site is a first public piece: a still pool that only moves when you do.
+              Click the water and the surface lifts. I’m looking for people to learn with,
+              and projects that need a careful pair of hands.
+            </p>
+            <blockquote>
+              “Excited to learn and meet new people.”
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel work" id="work">
+        <div class="panel-head reveal">
+          <p class="kicker">Selected work</p>
+          <h2>A short shelf, grown in public.</h2>
+        </div>
+        <ol class="work-list">
+          <li class="reveal">
+            <span class="idx">01</span>
+            <div>
+              <h3>
+                <a class="preview-link" href="https://gpt-clone-phi-virid.vercel.app" target="_blank" rel="noopener noreferrer">
+                  ChatGPT Clone
+                  <span class="preview-pop" aria-hidden="true">
+                    <img src="assets/projects/chatgpt-clone.png" alt="" width="1440" height="900" />
+                  </span>
+                </a>
+              </h3>
+              <p>
+                A conversational AI interface modeled on ChatGPT: a clean chat
+                layout for sending prompts and reading replies in a familiar,
+                product-like front end.
+              </p>
+            </div>
+            <a class="meta preview-link" href="https://gpt-clone-phi-virid.vercel.app" target="_blank" rel="noopener noreferrer">
+              Live site
+              <span class="preview-pop" aria-hidden="true">
+                <img src="assets/projects/chatgpt-clone.png" alt="" width="1440" height="900" />
+              </span>
+            </a>
+          </li>
+          <li class="reveal">
+            <span class="idx">02</span>
+            <div>
+              <h3>
+                <a class="preview-link" href="https://ai-powered-evangadi-forum-project-drab.vercel.app" target="_blank" rel="noopener noreferrer">
+                  Evangadi Forum
+                  <span class="preview-pop" aria-hidden="true">
+                    <img src="assets/projects/evangadi-forum.png" alt="" width="1440" height="900" />
+                  </span>
+                </a>
+              </h3>
+              <p>
+                A calm place for technical Q&amp;A. Post with context, search archives
+                by phrase or meaning, and ground answers in course documents with
+                retrieval-augmented generation (RAG).
+              </p>
+            </div>
+            <a class="meta preview-link" href="https://ai-powered-evangadi-forum-project-drab.vercel.app" target="_blank" rel="noopener noreferrer">
+              Live site
+              <span class="preview-pop" aria-hidden="true">
+                <img src="assets/projects/evangadi-forum.png" alt="" width="1440" height="900" />
+              </span>
+            </a>
+          </li>
+          <li class="reveal">
+            <span class="idx">03</span>
+            <div>
+              <h3>
+                <a class="preview-link" href="https://netclonemovie.netlify.app" target="_blank" rel="noopener noreferrer">
+                  Netflix Clone
+                  <span class="preview-pop" aria-hidden="true">
+                    <img src="assets/projects/netflix-clone.png" alt="" width="1280" height="682" />
+                  </span>
+                </a>
+              </h3>
+              <p>
+                A movie-browsing front end with trending rows, genre shelves,
+                My List, and a Netflix-style hero — browse by language, TV, and film.
+              </p>
+            </div>
+            <a class="meta preview-link" href="https://netclonemovie.netlify.app" target="_blank" rel="noopener noreferrer">
+              Live site
+              <span class="preview-pop" aria-hidden="true">
+                <img src="assets/projects/netflix-clone.png" alt="" width="1280" height="682" />
+              </span>
+            </a>
+          </li>
+        </ol>
+      </section>
+
+      <section class="panel skills" id="skills">
+        <div class="skills-grid reveal">
+          <div>
+            <p class="kicker">Currently holding</p>
+            <h2>Tools in the bag, and tools still wet.</h2>
+          </div>
+          <ul class="inventory">
+            <li>HTML</li>
+            <li>CSS</li>
+            <li>JavaScript</li>
+            <li>Git &amp; GitHub</li>
+            <li>Front-end architecture</li>
+            <li>Responsive design</li>
+            <li>Full-stack web <em>in progress</em></li>
+            <li>UI motion</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="panel contact" id="contact">
+        <div class="contact-block reveal">
+          <p class="kicker">Contact</p>
+          <h2>Drop a line. I’ll send a ripple back.</h2>
+          <p class="mail">Firaol Dereje Tsegaye</p>
+          <div class="contact-shuffle" data-contact-shuffle>
+            <button class="contact-arrow contact-arrow-prev" type="button" aria-label="Previous contact">
+              <svg viewBox="0 0 8 22" aria-hidden="true">
+                <path d="M7 1 1 11l6 10" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <div class="contact-viewport">
+              <div class="contact-track">
+            <a class="contact-orb contact-orb--mail is-active" href="mailto:firaoltsehaye183@gmail.com" aria-label="Email firaoltsehaye183@gmail.com">
+              <span class="contact-disc">
+                <span class="contact-orb-light" aria-hidden="true"></span>
+                <svg class="contact-orb-logo" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M1.5 6.2v11.1c0 .9.7 1.6 1.6 1.6H6V9.2l6 4.7 6-4.7V18.9h2.9c.9 0 1.6-.7 1.6-1.6V6.2c0-1.7-1.9-2.7-3.3-1.6L12 10.1 4.8 4.6C3.4 3.5 1.5 4.5 1.5 6.2Z"/>
+                </svg>
+              </span>
+              <span class="contact-orb-name">Mail</span>
+            </a>
+            <a class="contact-orb contact-orb--phone" href="tel:+13017289573" aria-label="Call 301-728-9573" tabindex="-1" aria-hidden="true">
+              <span class="contact-disc">
+                <span class="contact-orb-light" aria-hidden="true"></span>
+                <svg class="contact-orb-logo" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M7.1 2.8h2.4l1.2 3.5-2 1.4a13.2 13.2 0 0 0 6.6 6.6l1.4-2 3.5 1.2v2.4c0 1.1-.9 2-2 2C10.4 18 6 13.6 6 4.8c0-1.1.9-2 2-2Z"/>
+                </svg>
+              </span>
+              <span class="contact-orb-name">Phone</span>
+            </a>
+            <a class="contact-orb contact-orb--telegram" href="https://t.me/Truthabove" target="_blank" rel="noopener noreferrer" aria-label="Telegram @Truthabove" tabindex="-1" aria-hidden="true">
+              <span class="contact-disc">
+                <span class="contact-orb-light" aria-hidden="true"></span>
+                <svg class="contact-orb-logo" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M21.5 3.6 2.7 10.8c-1 .4-1 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.7.8.9 1.3.4l2.6-2.8 4.9 3.6c.9.6 1.6.3 1.8-.8L22.8 4.9c.3-1.2-.4-1.7-1.3-1.3Z"/>
+                </svg>
+              </span>
+              <span class="contact-orb-name">Telegram</span>
+            </a>
+            <a class="contact-orb contact-orb--github" href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub" tabindex="-1" aria-hidden="true">
+              <span class="contact-disc">
+                <span class="contact-orb-light" aria-hidden="true"></span>
+                <svg class="contact-orb-logo" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M12 1.6C6.2 1.6 1.5 6.3 1.5 12.1c0 4.6 3 8.6 7.2 10 .5.1.7-.2.7-.5v-1.8c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1.1 1.6 1.1.9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.3-.3-4.8-1.2-4.8-5.2 0-1.1.4-2.1 1.1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 2.9 1.1a10 10 0 0 1 5.3 0c2-1.4 2.9-1.1 2.9-1.1.6 1.5.2 2.6.1 2.9.7.7 1.1 1.7 1.1 2.8 0 4-2.5 4.9-4.8 5.2.4.3.7 1 .7 2v2.3c0 .3.2.6.7.5 4.2-1.4 7.2-5.4 7.2-10C22.5 6.3 17.8 1.6 12 1.6Z"/>
+                </svg>
+              </span>
+              <span class="contact-orb-name">GitHub</span>
+            </a>
+              </div>
+            </div>
+            <button class="contact-arrow contact-arrow-next" type="button" aria-label="Next contact">
+              <svg viewBox="0 0 8 22" aria-hidden="true">
+                <path d="M1 1l6 10-6 10" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+          <div class="contact-links">
+            <a href="resume.html">Resume</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>© <span id="year">2026</span> Firaol Dereje Tsegaye</p>
+      <p class="quiet">Move slowly. The water remembers.</p>
+    </footer>
+
+    <script type="module" src="js/site.js"></script>
+  </body>
+</html>
+<!-- made by Firaol Dereje Tsegaye -->
