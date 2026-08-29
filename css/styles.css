@@ -175,6 +175,7 @@ body.is-entered .site-header {
   cursor: pointer;
   transform: translateY(0);
   transition: transform 1.05s cubic-bezier(0.76, 0, 0.18, 1);
+  background: #052a3a;
 }
 
 body.is-entered .splash {
@@ -211,10 +212,25 @@ body.is-entered .splash h1 .family {
   display: block;
 }
 
+.splash::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 58% 30% at 70% 14%, rgba(210, 245, 255, 0.16), transparent 62%),
+    linear-gradient(125deg, transparent 42%, rgba(255, 225, 170, 0.07) 52%, transparent 64%),
+    linear-gradient(180deg, rgba(120, 205, 255, 0.09) 0%, transparent 30%);
+  mix-blend-mode: screen;
+}
+
 .hero-shade {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background:
+    radial-gradient(ellipse 75% 38% at 62% 10%, rgba(170, 225, 255, 0.14), transparent 58%),
     linear-gradient(180deg, rgba(5, 10, 20, 0.22), transparent 32%),
     linear-gradient(90deg, rgba(5, 10, 20, 0.28), transparent 48%);
   pointer-events: none;
@@ -667,7 +683,7 @@ blockquote {
   align-items: center;
   overflow: hidden;
   padding: 6.5rem var(--pad) 4rem;
-  background: #031018;
+  background: #031820;
 }
 
 .water-home {
@@ -681,6 +697,7 @@ blockquote {
   z-index: 1;
   pointer-events: none;
   background:
+    radial-gradient(ellipse 62% 34% at 68% 16%, rgba(165, 230, 255, 0.12), transparent 60%),
     linear-gradient(180deg, rgba(2, 8, 14, 0.52) 0%, rgba(2, 8, 14, 0.22) 42%, rgba(2, 8, 14, 0.6) 100%),
     radial-gradient(ellipse 70% 60% at 50% 40%, transparent 18%, rgba(2, 10, 16, 0.42) 100%);
 }
