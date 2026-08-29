@@ -175,6 +175,7 @@ body.is-entered .site-header {
   cursor: pointer;
   transform: translateY(0);
   transition: transform 1.05s cubic-bezier(0.76, 0, 0.18, 1);
+  background: #052a3a;
 }
 
 body.is-entered .splash {
@@ -682,7 +683,7 @@ blockquote {
   align-items: center;
   overflow: hidden;
   padding: 6.5rem var(--pad) 4rem;
-  background: #031018;
+  background: #031820;
 }
 
 .water-home {
