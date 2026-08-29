@@ -50,20 +50,33 @@ const RENDER_FRAG = `#version 300 es
 precision highp float;
 in vec2 vUv;
 uniform sampler2D uHeight;
-uniform sampler2D uPhoto;
 uniform vec2 uTexel;
 uniform vec2 uResolution;
-uniform vec2 uPhotoSize;
 uniform vec2 uPointer;
+uniform float uTime;
 out vec4 fragColor;
 
-vec2 coverUV(vec2 uv) {
-  float canvasAspect = uResolution.x / max(uResolution.y, 1.0);
-  float photoAspect = uPhotoSize.x / max(uPhotoSize.y, 1.0);
-  vec2 scale = vec2(1.0);
-  if (canvasAspect > photoAspect) scale.y = photoAspect / canvasAspect;
-  else scale.x = canvasAspect / photoAspect;
-  return (uv - 0.5) * scale + 0.5;
+vec3 poolTiles(vec2 uv) {
+  vec2 tileUV = uv * vec2(28.0, 18.0);
+  vec2 tile = fract(tileUV);
+  vec2 tileId = floor(tileUV);
+
+  float groutX = smoothstep(0.02, 0.07, tile.x) * smoothstep(0.98, 0.93, tile.x);
+  float groutY = smoothstep(0.02, 0.07, tile.y) * smoothstep(0.98, 0.93, tile.y);
+  float grout = groutX * groutY;
+
+  float n = fract(sin(dot(tileId, vec2(12.9898, 78.233))) * 43758.5453);
+  vec3 tileA = vec3(0.07, 0.36, 0.50);
+  vec3 tileB = vec3(0.05, 0.30, 0.44);
+  vec3 tileColor = mix(tileA, tileB, n);
+  vec3 groutColor = vec3(0.03, 0.12, 0.20);
+  return mix(groutColor, tileColor, grout);
+}
+
+vec3 poolDepth(vec2 uv) {
+  float vignette = 1.0 - length((uv - 0.5) * vec2(1.05, 0.85)) * 0.34;
+  float depth = mix(0.42, 1.0, clamp(uv.y * 0.92 + vignette * 0.28, 0.0, 1.0));
+  return poolTiles(uv) * depth;
 }
 
 void main() {
@@ -76,26 +89,44 @@ void main() {
   float hU = texture(uHeight, uv + vec2(0.0, uTexel.y)).r - 0.5;
 
   vec3 N = normalize(vec3((hL - hR) * 22.0, (hD - hU) * 22.0, 1.0));
-  vec2 duv = N.xy * 0.055;
-  vec2 base = coverUV(uv);
-  vec2 sampleUV = clamp(base + duv, 0.002, 0.998);
+  vec2 duv = N.xy * 0.048;
+  vec2 sampleUV = clamp(uv + duv, 0.002, 0.998);
 
-  float r = texture(uPhoto, sampleUV + duv * 0.012).r;
-  float g = texture(uPhoto, sampleUV).g;
-  float b = texture(uPhoto, sampleUV - duv * 0.012).b;
-  vec3 photo = vec3(r, g, b);
+  vec3 floorR = poolDepth(clamp(sampleUV + duv * 0.018, 0.002, 0.998));
+  vec3 floorG = poolDepth(sampleUV);
+  vec3 floorB = poolDepth(clamp(sampleUV - duv * 0.018, 0.002, 0.998));
+  vec3 water = vec3(floorR.r, floorG.g, floorB.b);
+
+  float absorb = mix(0.58, 0.82, uv.y);
+  water = mix(water, water * vec3(0.55, 0.86, 1.0), absorb);
 
   vec3 L = normalize(vec3(-0.25, 0.55, 0.8));
-  vec3 H = normalize(L + vec3(0.0, 0.0, 1.0));
-  float spec = pow(clamp(dot(N, H), 0.0, 1.0), 140.0);
-  photo += vec3(0.78, 0.90, 1.0) * spec * 0.38;
+  vec3 V = vec3(0.0, 0.0, 1.0);
+  vec3 H = normalize(L + V);
+  float NdotL = clamp(dot(N, L), 0.0, 1.0);
+  float fresnel = pow(1.0 - clamp(dot(N, V), 0.0, 1.0), 2.4);
+
+  water += vec3(0.10, 0.22, 0.32) * NdotL * 0.20;
+
+  float spec = pow(clamp(dot(N, H), 0.0, 1.0), 130.0);
+  float specSoft = pow(clamp(dot(N, H), 0.0, 1.0), 30.0);
+  water += vec3(0.82, 0.94, 1.0) * spec * 0.50;
+  water += vec3(0.62, 0.82, 0.98) * specSoft * 0.10;
+
+  vec3 skyReflect = vec3(0.50, 0.78, 0.98);
+  water = mix(water, skyReflect * 0.55 + water * 0.45, fresnel * 0.38);
+
+  float ripple = abs(hL) + abs(hR) + abs(hD) + abs(hU);
+  float caustic = sin((sampleUV.x + sampleUV.y) * 52.0 + uTime * 1.4 + ripple * 80.0) * 0.5 + 0.5;
+  water += vec3(0.40, 0.72, 0.90) * caustic * ripple * 0.14;
 
   vec2 p = (uv - uPointer);
   p.x *= aspect;
   float ring = abs(length(p) - 0.016);
-  photo += vec3(0.75, 0.88, 1.0) * smoothstep(0.01, 0.0, ring) * 0.12;
+  water += vec3(0.78, 0.90, 1.0) * smoothstep(0.01, 0.0, ring) * 0.16;
+  water += vec3(0.94, 0.98, 1.0) * spec * fresnel * 0.10;
 
-  fragColor = vec4(photo, 1.0);
+  fragColor = vec4(water, 1.0);
 }`;
 
 function compile(gl, type, source) {
@@ -169,11 +200,7 @@ export class WaterSurface {
     this.raf = 0;
     this.fallbackRipples = [];
     this.ctx2d = null;
-    this.photoUrl = options.photo || "assets/water.png";
     this.host = options.host || canvas.parentElement || canvas;
-    this.photo = null;
-    this.photoTex = null;
-    this.photoSize = [1920, 1080];
 
     if (this.reducedMotion) {
       this._initFallback();
@@ -223,31 +250,11 @@ export class WaterSurface {
     };
     this.renderUniforms = {
       uHeight: gl.getUniformLocation(this.renderProgram, "uHeight"),
-      uPhoto: gl.getUniformLocation(this.renderProgram, "uPhoto"),
       uTexel: gl.getUniformLocation(this.renderProgram, "uTexel"),
       uResolution: gl.getUniformLocation(this.renderProgram, "uResolution"),
-      uPhotoSize: gl.getUniformLocation(this.renderProgram, "uPhotoSize"),
       uPointer: gl.getUniformLocation(this.renderProgram, "uPointer"),
+      uTime: gl.getUniformLocation(this.renderProgram, "uTime"),
     };
-
-    this.photoTex = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, this.photoTex);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texImage2D(
-      gl.TEXTURE_2D,
-      0,
-      gl.RGBA,
-      1,
-      1,
-      0,
-      gl.RGBA,
-      gl.UNSIGNED_BYTE,
-      new Uint8Array([6, 18, 42, 255])
-    );
-    this._loadPhoto();
 
     let half = true;
     this.read = makeTarget(gl, SIM_SIZE, true, false);
@@ -278,27 +285,27 @@ export class WaterSurface {
     this.gl = null;
     this.mode = "canvas";
     this.ctx2d = this.canvas.getContext("2d");
-    this._loadPhoto();
     this._bindPointer();
     this._resize();
     window.addEventListener("resize", () => this._resize());
   }
 
-  _loadPhoto() {
-    const img = new Image();
-    img.decoding = "async";
-    img.onload = () => {
-      this.photo = img;
-      this.photoSize = [img.naturalWidth || img.width, img.naturalHeight || img.height];
-      if (this.gl && this.photoTex) {
-        const gl = this.gl;
-        gl.bindTexture(gl.TEXTURE_2D, this.photoTex);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
+  _drawPoolFallback(ctx, w, h) {
+    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, "#0a4a62");
+    grad.addColorStop(0.45, "#083d54");
+    grad.addColorStop(1, "#052a3a");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    const tile = 28;
+    for (let y = 0; y < h + tile; y += tile) {
+      for (let x = 0; x < w + tile; x += tile) {
+        const shade = ((x / tile + y / tile) % 2) * 0.04;
+        ctx.fillStyle = `rgba(${Math.round(18 + shade * 255)}, ${Math.round(92 + shade * 80)}, ${Math.round(128 + shade * 60)}, 0.22)`;
+        ctx.fillRect(x, y, tile - 2, tile - 2);
       }
-    };
-    img.src = this.photoUrl;
+    }
   }
 
   _bindPointer() {
@@ -425,17 +432,14 @@ export class WaterSurface {
     gl.bindVertexArray(this.vao);
     gl.useProgram(this.renderProgram);
     gl.uniform1i(this.renderUniforms.uHeight, 0);
-    gl.uniform1i(this.renderUniforms.uPhoto, 1);
     gl.uniform2f(this.renderUniforms.uTexel, texel, texel);
     gl.uniform2f(this.renderUniforms.uResolution, this.canvas.width, this.canvas.height);
-    gl.uniform2f(this.renderUniforms.uPhotoSize, this.photoSize[0], this.photoSize[1]);
     gl.uniform2f(this.renderUniforms.uPointer, this.pointer.x, this.pointer.y);
+    gl.uniform1f(this.renderUniforms.uTime, this.time);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, this.read.tex);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, this.photoTex);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, this.read.tex);
@@ -446,16 +450,7 @@ export class WaterSurface {
   _drawFallback(dt) {
     const ctx = this.ctx2d;
     const { width: w, height: h } = this.canvas;
-    if (this.photo) {
-      const img = this.photo;
-      const scale = Math.max(w / img.width, h / img.height);
-      const dw = img.width * scale;
-      const dh = img.height * scale;
-      ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
-    } else {
-      ctx.fillStyle = "#06152a";
-      ctx.fillRect(0, 0, w, h);
-    }
+    this._drawPoolFallback(ctx, w, h);
 
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
@@ -469,6 +464,11 @@ export class WaterSurface {
       ctx.arc(x, y, ripple.r, 0, Math.PI * 2);
       ctx.strokeStyle = `rgba(210, 230, 255, ${ripple.alpha * 0.55})`;
       ctx.lineWidth = ripple.width;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(x, y, ripple.r * 0.72, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(255, 248, 230, ${ripple.alpha * 0.22})`;
+      ctx.lineWidth = ripple.width * 0.45;
       ctx.stroke();
       return true;
     });

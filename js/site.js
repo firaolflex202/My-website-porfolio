@@ -5,11 +5,10 @@ const canvas = document.getElementById("water");
 const homeCanvas = document.getElementById("water-home");
 const splash = document.getElementById("splash");
 const home = document.getElementById("home");
-const surface = canvas ? new WaterSurface(canvas, { reducedMotion, photo: "assets/water.png" }) : null;
+const surface = canvas ? new WaterSurface(canvas, { reducedMotion }) : null;
 const homeSurface = homeCanvas
   ? new WaterSurface(homeCanvas, {
       reducedMotion,
-      photo: "assets/water-home.png",
       host: home || homeCanvas.parentElement,
     })
   : null;
