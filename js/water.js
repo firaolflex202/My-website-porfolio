@@ -55,6 +55,7 @@ uniform vec2 uTexel;
 uniform vec2 uResolution;
 uniform vec2 uPhotoSize;
 uniform vec2 uPointer;
+uniform float uTime;
 out vec4 fragColor;
 
 vec2 coverUV(vec2 uv) {
@@ -86,14 +87,30 @@ void main() {
   vec3 photo = vec3(r, g, b);
 
   vec3 L = normalize(vec3(-0.25, 0.55, 0.8));
-  vec3 H = normalize(L + vec3(0.0, 0.0, 1.0));
-  float spec = pow(clamp(dot(N, H), 0.0, 1.0), 140.0);
-  photo += vec3(0.78, 0.90, 1.0) * spec * 0.38;
+  vec3 V = vec3(0.0, 0.0, 1.0);
+  vec3 H = normalize(L + V);
+  float NdotL = clamp(dot(N, L), 0.0, 1.0);
+  float fresnel = pow(1.0 - clamp(dot(N, V), 0.0, 1.0), 2.6);
+
+  photo += vec3(0.14, 0.24, 0.34) * NdotL * 0.16;
+
+  float spec = pow(clamp(dot(N, H), 0.0, 1.0), 130.0);
+  float specSoft = pow(clamp(dot(N, H), 0.0, 1.0), 32.0);
+  photo += vec3(0.78, 0.90, 1.0) * spec * 0.44;
+  photo += vec3(0.58, 0.78, 0.96) * specSoft * 0.09;
+
+  vec3 skyReflect = vec3(0.42, 0.72, 0.96);
+  photo = mix(photo, photo + skyReflect * 0.38, fresnel * 0.24);
+
+  float ripple = abs(hL) + abs(hR) + abs(hD) + abs(hU);
+  float caustic = sin((uv.x + uv.y) * 46.0 + uTime * 1.6 + ripple * 72.0) * 0.5 + 0.5;
+  photo += vec3(0.32, 0.62, 0.84) * caustic * ripple * 0.11;
 
   vec2 p = (uv - uPointer);
   p.x *= aspect;
   float ring = abs(length(p) - 0.016);
-  photo += vec3(0.75, 0.88, 1.0) * smoothstep(0.01, 0.0, ring) * 0.12;
+  photo += vec3(0.75, 0.88, 1.0) * smoothstep(0.01, 0.0, ring) * 0.14;
+  photo += vec3(0.92, 0.97, 1.0) * spec * fresnel * 0.08;
 
   fragColor = vec4(photo, 1.0);
 }`;
@@ -228,6 +245,7 @@ export class WaterSurface {
       uResolution: gl.getUniformLocation(this.renderProgram, "uResolution"),
       uPhotoSize: gl.getUniformLocation(this.renderProgram, "uPhotoSize"),
       uPointer: gl.getUniformLocation(this.renderProgram, "uPointer"),
+      uTime: gl.getUniformLocation(this.renderProgram, "uTime"),
     };
 
     this.photoTex = gl.createTexture();
@@ -430,6 +448,7 @@ export class WaterSurface {
     gl.uniform2f(this.renderUniforms.uResolution, this.canvas.width, this.canvas.height);
     gl.uniform2f(this.renderUniforms.uPhotoSize, this.photoSize[0], this.photoSize[1]);
     gl.uniform2f(this.renderUniforms.uPointer, this.pointer.x, this.pointer.y);
+    gl.uniform1f(this.renderUniforms.uTime, this.time);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, this.read.tex);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -469,6 +488,11 @@ export class WaterSurface {
       ctx.arc(x, y, ripple.r, 0, Math.PI * 2);
       ctx.strokeStyle = `rgba(210, 230, 255, ${ripple.alpha * 0.55})`;
       ctx.lineWidth = ripple.width;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(x, y, ripple.r * 0.72, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(255, 248, 230, ${ripple.alpha * 0.22})`;
+      ctx.lineWidth = ripple.width * 0.45;
       ctx.stroke();
       return true;
     });
