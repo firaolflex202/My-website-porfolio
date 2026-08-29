@@ -1,5 +1,9 @@
 # Nejat Ibrahim Nuru
 
+Portfolio site for **Nejat Ibrahim Nuru** — a copy of the original portfolio, with the name updated.
+
+> This is a separate copy from the [Firaol Dereje Tsegaye portfolio](https://github.com/firaolflex202/My-website-porfolio) on the `main` branch.
+
 Portfolio site: a water-ripple intro that slides up into a neon home page.
 
 ## Run locally
