@@ -186,4 +186,4 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-// made by Firaol Dereje Tsegaye
+// made by Nejat Ibrahim Nuru

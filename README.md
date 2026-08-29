@@ -1,4 +1,4 @@
-# Firaol Dereje Tsegaye
+# Nejat Ibrahim Nuru
 
 Portfolio site: a water-ripple intro that slides up into a neon home page.
 
@@ -12,4 +12,4 @@ Then open [http://localhost:8080](http://localhost:8080).
 
 To publish on GitHub Pages: **Settings → Pages → Deploy from a branch**, choose `main` and `/ (root)`.
 
-made by Firaol Dereje Tsegaye
+made by Nejat Ibrahim Nuru
